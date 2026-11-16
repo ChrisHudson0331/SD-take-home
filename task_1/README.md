@@ -37,3 +37,48 @@ Expected outputs: README.md, TSV or RDS of FDA compounds, TSV or RDS of cell lin
 Submit script(s), envs, and add your notes to the README within the `task_1` folder.
 
 ## YOUR COMMENTS AND EXPLANATIONS HERE
+
+### Task 1.1
+
+The script outputs the file fda_compounds.rds containing the first mechanism entry attached information attached to each FDA approved drug in the AnnotationDB.
+The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location.
+The script logic is divided into 8 parts.
+
+1. An API request is made to the AnnotationDB requesting all compound data. The resulting data is converted to a JSON object and all non FDA approved drugs are filtered out. Due to the tabular structure of the compound data, the JSON object is actually simplified to a dataframe automatically, this however should be made more clear as the name of the dataframe is json_fda_comp instead of df_fda_comp. A clarity change that was not made due to time constraints.
+
+2. The resulting 2790 compounds need to be queried to the many endpoint to fetch their mechanism data. Each query takes about 1 second, to avoid making 2790 queries, batches of size 128 are prepared so the many endpoint returns mechanism data for 128 compounds in a single hit. This number was chosen from an experiment wherein the endpoint was hit with batch sizes in powers of 2 until the resulting url was too long, resulting in a fail. 128 was found to be the batch size that didn't fail.
+
+3. The mechanism data is fetched for each batch and then used to construct a single JSON object containing the mechanism data. The code is more complicated than in part 1 for two reasons, first 2790/128=22 queries must be executed and the results combined into a single JSON. Second, there is some recursive logic in this section which breaks up batch sizes in half in the event the URL becomes too long for 128 compounds with unusually large names. This was found to be necessary when the script was originally written for the whole AnnotationDB dataset rather than just the FDA approved drugs. It is now extra logic which should be simplified but hasn't been due to the time constraints of this assessment.
+
+4. The first mechanism data from the JSON object constructed in part 3 is extracted and stored in a dataframe. The rows correspond to the compounds and the columns to the first mechanism data.
+
+5. The first mechanism data from part 4 is joined to the compound dataframe in part 1. Most of the logic is dedicated to matching the the rows of the two dataframes on the basis of compound name and CID. The CID, being a unique value for the dataset was also set to the treatmentid field which should be present and unique when constructing the PharmacoSet() object in task 1.3.
+
+6. Some basic checks are applied to the resulting dataframe before saving it to catch any simple mistakes. The original compound table was 2790 rows, 2790 compounds were queried for mechanisms, 2811 mechanism entries were returned indicating some compounds had multiple mechanism entries, 2790-2596=194 compounds had no mechanism data, the final dataframe had 2790 rows, no compounds were missing from the mechanisms API, and 24 duplicate compounds were found in the mechanisms API going off compound name alone. These stats are largely promising but suggest some handling of duplicate compound names from the mechanism API need to be handled, the appropriate logic is applied in part 5. Lastly a few basic checks on the final dataframe will stop the program if they fail, they all pass.
+
+7. Another verification check is applied to make sure the final dataframe is in good shape. The mechanisms entries in the final dataframe are compared to the first mechanisms found in the original JSON response from the mechanisms API. 2584 exact matches were found and 0 mismatches which is great.
+
+8. The constructed and validated final dataframe is saved as fda_compounds.rds in the outputs folder. The script must be run from the scripts environment for this save to execute successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
