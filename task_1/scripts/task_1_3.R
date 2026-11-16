@@ -4,6 +4,10 @@ library(SummarizedExperiment)
 library(MultiAssayExperiment)
 library(S4Vectors)
 
+# ============================================
+# 1. CREATE PHARMACOSET
+# ============================================
+
 # Load FDA-approved compounds
 fda_compounds <- readRDS("../outputs/fda_compounds.rds")
 
@@ -47,7 +51,7 @@ pset <- PharmacoSet2(
 )
 
 # ============================================
-# VALIDATE PHARMACOSET
+# 2. VALIDATE PHARMACOSET
 # ============================================
 
 cat("\n========== PHARMACOSET VALIDATION ==========\n")
@@ -140,7 +144,7 @@ cat("Treatment response is empty: PASSED\n")
 cat("\nAll structural and metadata tests passed.\n")
 
 # ============================================
-# SAVE PHARMACOSET
+# 3. SAVE PHARMACOSET
 # ============================================
 
 saveRDS(
