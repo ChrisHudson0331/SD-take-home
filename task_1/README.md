@@ -78,7 +78,26 @@ The script logic is divided into 6 parts and closely follows in logic to what wa
 
 6. The final dataframe is saved to cell_lines.rds in the output folder. The script must be run from the scripts directory for this save to execute successfully.
 
+### Task 1.3
 
+The script task_1_3.R outputs the file AnnotationDB_pset.rds containing the PharmacoSet() with the tables from tasks 1.1 and 1.2.
+The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location and read the dataframes from tasks 1.1 and 1.2.
+The script logic is divided into 3 parts
+
+1. The dataframes containing the fda compounds and cell lines data (the outputs of task 1.1 and 1.2) are read and used to create a PharmacoSet() following the structure laid out in this README file. The treatmentid and sampleid fields from those fields are also checked to make sure they are non empty and non duplicated and then they are used to label the rows of the two dataframes.
+
+2. Some checks are made to ensure the structure of the PharmacoSet() is sensible. The following checks are made:
+
+   - That the PharmacoSet() is a valid S4 object
+   - That the counts of the sample and treatment dataframes match those of the cell lines and fda compounds dataframes
+   - That all the cell line metadata fields are present in the sample dataframe
+   - That the identifiers of the two dataframes are present and unique
+   - That the sample and treatment dataframes exactly match the cell lines and fda compounds dataframes
+   - That all treatment dataframe entries are FDA approved
+   - That the sampleid and treatmentid columns are present in the sample and treatment dataframes
+   - That an empty treatment response is present
+
+3. The resulting PharmacoSet() object is saved to the output folder as AnnotationDB_pset.rds. 
 
 
 
