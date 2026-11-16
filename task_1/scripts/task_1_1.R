@@ -215,7 +215,7 @@ rownames(json_fda_comp) <- NULL
 json_fda_comp$treatmentid <- as.character(json_fda_comp$cid)
 
 # ============================================
-# 7. BASIC VERIFICATION
+# 6. BASIC VERIFICATION
 # ============================================
 
 cat("\n========== VERIFICATION ==========\n")
@@ -236,6 +236,15 @@ cat(
   "Mechanism records returned:",
   nrow(json_fda_mech),
   "\n"
+)
+
+# Identify compounds with at least one mechanism
+nonempty <- which(
+  vapply(
+    json_fda_mech$mechanisms,
+    function(x) !is.null(x) && nrow(x) > 0,
+    logical(1)
+  )
 )
 
 cat(
@@ -276,7 +285,7 @@ cat("\nBasic verification passed.\n")
 
 
 # ============================================
-# 8. TEST FIRST MECHANISM MATCHING
+# 7. TEST FIRST MECHANISM MATCHING
 # ============================================
 
 mismatches <- integer(0)
@@ -360,7 +369,7 @@ if (!test_first_mechanism) {
 
 
 # ============================================
-# 9. SAVE FINAL DATASET
+# 8. SAVE FINAL DATASET
 # ============================================
 
 saveRDS(
