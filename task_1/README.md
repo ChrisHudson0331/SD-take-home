@@ -40,7 +40,7 @@ Submit script(s), envs, and add your notes to the README within the `task_1` fol
 
 ### Task 1.1
 
-The script outputs the file fda_compounds.rds containing the first mechanism entry attached information attached to each FDA approved drug in the AnnotationDB.
+The script task_1_1.R outputs the file fda_compounds.rds containing the first mechanism entry attached information attached to each FDA approved drug in the AnnotationDB.
 The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location.
 The script logic is divided into 8 parts.
 
@@ -58,12 +58,25 @@ The script logic is divided into 8 parts.
 
 7. Another verification check is applied to make sure the final dataframe is in good shape. The mechanisms entries in the final dataframe are compared to the first mechanisms found in the original JSON response from the mechanisms API. 2584 exact matches were found and 0 mismatches which is great.
 
-8. The constructed and validated final dataframe is saved as fda_compounds.rds in the outputs folder. The script must be run from the scripts environment for this save to execute successfully.
+8. The constructed and validated final dataframe is saved as fda_compounds.rds in the outputs folder. The script must be run from the scripts directory for this save to execute successfully.
 
+### Task 1.2
 
+The script task_1_2.R outputs the file cell_lines.rds containing the cell lines data and their metadata from AnnotationDB.
+The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location.
+The script logic is divided into 6 parts and closely follows in logic to what was described in Task 1.1
 
+1. The base cell line data is retrieved via API call from the AnnotationDB and the resulting data converted to a JSON object. Just like in Task 1.1 part 1, the resulting data is tabular in nature and so the object json_clines is actually a poorly named dataframe. Given more time this would be made more clear. 1743 cell lines are retrieved in this part.
 
+2. As with Task 1.1 part 2, the cell lines are divided into batches of size 128. This way, cell line metadata can be fetched from the "many" AnnotationDB API endpoint for 128 cell lines at a time.
 
+3. The metadata for each cell line is fetched in batches and the resulting data is merged together in a single dataframe. The name of the dataframe is poorly named json_clines_details. The redundant complex recursive logic in part 3 of task 1.1 is not present in this part. A total of 1743/128=14 batch api calls are made.
+
+4. The metadata table from part 3 is combined with the cell line table from part 1 where the data is matched on the accession field which is unique. That field was also used as the sampleid for building the PharmacoSet()
+
+5. Some basic checks on the final dataframe are done to validate the process. There were originally 1743 cell lines, 1774 cell line metadata rows, a final dataframe of 1743 rows, 72 missing ages entries, and 39 missing sex entries. The pipeline stops running if the final dataframe fails certain basic properties like having duplicate accession entries.
+
+6. The final dataframe is saved to cell_lines.rds in the output folder. The script must be run from the scripts directory for this save to execute successfully.
 
 
 
