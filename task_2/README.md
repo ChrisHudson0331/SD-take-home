@@ -150,7 +150,7 @@ Submit script(s), envs, and add your notes to the README within the `task_2` fol
 
 ### Task 2.1
 
-This file outputs sample_metadata.rds to the outputs folder. It takes task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv as inputs. The script identifies all unique cell lines in mutations.tsv and then queries the AnnotationDB for the required metadata for the cell lines: age, sex, disease, etc. cell_lines.rds is used to change the cell line names used in mutations.tsv to the format expected for the AnnotationDB API call.
+This file task_2_1.R outputs sample_metadata.rds to the outputs folder. It takes task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv as inputs. The script identifies all unique cell lines in mutations.tsv and then queries the AnnotationDB for the required metadata for the cell lines: age, sex, disease, etc. cell_lines.rds is used to change the cell line names used in mutations.tsv to the format expected for the AnnotationDB API call.
 
 The script must be run from the task_2/scripts directory to correctly read the input files and output the output file.
 
@@ -185,7 +185,7 @@ The script is divided into 9 parts.
 
 ### Task 2.2
 
-Source datasets for this script are /raw_data/mutations.tsv, /outputs/sample_metadata.rds and gencode.v50.annotation.gtf.
+Source datasets for task_2_2.R are /raw_data/mutations.tsv, /outputs/sample_metadata.rds and gencode.v50.annotation.gtf.
 
 NOTE: The link to the dataset gencode.v50.annotation.gtf is available in part 2.3 of this README file. It must be saved in the raw_data folder in order for this script to run correctly. The file is too large to be stored in the raw_data file in this repo so when cloned the gft file must be manually added to the raw_data folder.
 
@@ -213,24 +213,24 @@ It was also checked that the cell line and gene names in mutations_df and sample
 
 5. The ensembl matrix, row data and column data tables are combined together into a single SummarizedExperiment object which is saved to the outputs folder as mutation_experiment.rds.
 
-6. Some validation checks are performed on the SummarizedExperiment object. Notably the checks posed in part 2.6 of the README are checked and passed. 
+6. Some validation checks are performed on the SummarizedExperiment object. Notably the checks posed in part 2.6 of the README are checked and passed. Regarding interpretation of 0s in the ensembl matrix, please see the logic described in the summary of task 2.2.
 
+### Task 2.3
 
+The script task_2_3.R takes as input sample_metadata.rds output from task_2_1.R and mutation_experiment.rds from task_2_2.R and AnnotationDB_pset.rds from task_1_3.R and outputs the PharmacoSet object pharmacoset.rds combining the 3 input data structures. sample_metadata.rds is also resaved as sample_table.rds, this is redundant and would be removed in a future iteration of this project.
 
+This script must be run from the scripts directory to correctly read and write the files. 
 
+There are 5 parts to this script
 
+1. The input data objects are read into the program.
 
+2. The curation field in the PharmacoSet object is constructed. The tissue and and treatment attributes are empty dataframes as expected while the sample attribute is a dataframe mapping sampleid in the PharmacoSet sample field (sample_metadata.rds) to the ensembl matrix column values. Both use the cell line sampleid field to do this so the mapping is trivial but is still made explicit in the PharmacoSet.
 
+3. The SummarizedExperiment mutation_experiment.rds is stored in a MultiAssayExperiment with the column data field set to sample_metadata.rds.
 
+4. The PharmacoSet object is created by assigning the MultiAssayExperiment to the molecularProfiles fiels, the curation list from part 2 to the curation field, the treatment_response from task 1.3 to the treatment response, sample_metadata.rds to sample and an empty dataframe to treatment. 
 
-
-
-
-
-
-
-
-
-
+5. The final PharmacoSet is saved to pharmacoset.rds in the outputs folder. sample_table.rds is also redundantly saved in the outputs folder. Some validation checks are also made on the final object. 
 
 
