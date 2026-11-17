@@ -151,7 +151,9 @@ Submit script(s), envs, and add your notes to the README within the `task_2` fol
 ### Task 2.1
 
 This file outputs sample_metadata.rds to the outputs folder. It takes task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv as inputs. The script identifies all unique cell lines in mutations.tsv and then queries the AnnotationDB for the required metadata for the cell lines: age, sex, disease, etc. cell_lines.rds is used to change the cell line names used in mutations.tsv to the format expected for the AnnotationDB API call.
+
 The script must be run from the task_2/scripts directory to correctly read the input files and output the output file.
+
 The script is divided into 9 parts.
 
 1. task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv are loaded as dataframes into the program.
@@ -184,10 +186,15 @@ The script is divided into 9 parts.
 ### Task 2.2
 
 Source datasets for this script are /raw_data/mutations.tsv, /outputs/sample_metadata.rds and gencode.v50.annotation.gtf.
+
 NOTE: The link to the dataset gencode.v50.annotation.gtf is available in part 2.3 of this README file. It must be saved in the raw_data folder in order for this script to run correctly. The file is too large to be stored in the raw_data file in this repo so when cloned the gft file must be manually added to the raw_data folder.
+
 Datasets produced by this script are: ensembl_matrix.rds, gene_exclusions.rds, row_data.rds, col_data.rds and mutation_experiment.rds.
+
 The main function of this script is to create an ensembl matrix from the variants data in mutations.tsv. The ensembl matrix has all the cell lines mentioned in the mutations.tsv file as the columns and all genes as the row. Each entry in the mutations.tsv file contains cell_line and SNPEFF_GENE_NAME entries from which these column and row values are obtained. If there is at least 1 entry in the mutations.tsv file with a given gene - cell line combo then the corresponding entry in the ensembl matrix is a 1 otherwise it is a 0. row_data.rds and col_data.rds contain the metadata for the row and col values in the ensembl matrix and gene_exclusions.rds documents dropped rows in the ensembl matrix due to names that do not map directly to values in the gtf file. Lastly, the final SummarizedExperiment containing all these outputs in one object is saved as mutation_experiment.rds.
+
 This script must be run from the scripts directory to correctly read and write the files. AGAIN, gencode.v50.annotation.gtf must be manually saved in the raw_data folder after cloning, github would not allow this file to be stored there due to its large size.
+
 There are 6 parts to this script
 
 1. The data in mutations.tsv is loaded into the dataframe mutations_df and the results from task 2.1 are loaded into the sample_metadata dataframe. mutations_df is analyzed to deduce there are 46 unique cell lines, 7466 unique genes and 13426 variants. The counts of the SNPEFF_EFFECT and SNPEFF_IMPACT column values in mutations_df are analyzed to decide if any variants should be filtered out of mutations_df. It was decided that no filtering would occur for the below reasoning:
