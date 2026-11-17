@@ -147,3 +147,62 @@ Expected outputs: README.md, sample table (TSV or RDS), gene table (TSV or RDS),
 Submit script(s), envs, and add your notes to the README within the `task_2` folder.
 
 ## YOUR COMMENTS AND EXPLANATIONS HERE
+
+### Task 2.1
+
+This file outputs sample_metadata.rds to the outputs folder. It takes task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv as inputs. The script identifies all unique cell lines in mutations.tsv and then queries the AnnotationDB for the required metadata for the cell lines: age, sex, disease, etc. cell_lines.rds is used to change the cell line names used in mutations.tsv to the format expected for the AnnotationDB API call.
+The script must be run from the task_2/scripts directory to correctly read the input files and output the output file.
+The script is divided into 9 parts.
+
+1. task_1/outputs/cell_lines.rds and task_2/raw_data/mutations.tsv are loaded as dataframes into the program.
+
+2. The sample_metadata dataframe is initialized containing the unique cell lines in mutations.tsv as sampleid. The name of each cell line is also identified by removing the suffix in the sampleid. For instance, U266_ATCC has a sampleid of U266_ATCC and a name of U266. The name is what is used to query the AnnotationsDB, not the sampleid.
+
+3. The name field in sample_metadata is matched with the cell_line_name field in clines_df. When a match is found the index of the clines_df with the appropriate cell_line_name is saved so that it can be used to query the AnnotationDB for cell_line details. First exact matching is tried, then normalized matching wherein punctuation is removed from the matching fields and they are converted to uppercase/numeric strings. The accession field for sample_metadata is also recorded from the clines_df, this is used later to match the sample_metadata rows to the data returned from the AnnotationDB (see part 5).
+
+4. The AnnotationDB is queried at the many endpoint for cell line details containing age, sex, population and disease information for each cell line. Of the 46 unique cell lines in mutations.tsv, 44 can be found in the AnnotationDB and their information can be fetched in a single batch call.
+
+5. The results of AnnotationDB API call are matched to the sample_metadata table via the accession field which was used as the sampleid in task 1.
+
+6. age, sex, population and the first listed disease are added to the sample_metadata table.
+
+7. The final fields for the sample metadata table are added, notably the fields In.AnnotationDB, AnnotationDB.Title and tissueid. The row names are also set equal to the sampleid which is meant to be the unique identifier of each row.
+
+8. Some standardization of missing values and validation checks are applied. Empty strings are replaced with NA. "Age unspecified" and "Sex unspecified" should have also been replaced with NA and would be if given more time. The following validation checks and statistics are derived in this section:
+
+- sample_metadata has the same length as the mutations_df derived directly from unique cell lines in mutations.tsv
+- sample_metadata's sampleid is unique, complete and matches the original mutations_df cell line values
+- sample_metadata has all required columns
+- sample_metadata doesn't have any NA in the In.AnnotationDB field
+- There are 0 duplicate accession records in sample_metadata
+- No accessions are matched with multiple API records
+- 2 cell lines in mutations.tsv were not found in AnnotationDB
+- An inaccurate count of data missing in AnnotationDB is reported based on the untreated "Age unspecified" and "Sex unspecified" values.
+
+9. sample_metadata is saved as sample_metadata.rds in the output folder
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
