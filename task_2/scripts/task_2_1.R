@@ -69,11 +69,6 @@ for (i in unmatched) {
 # Retrieve Cellosaurus accessions
 sample_metadata$accession <- clines_df$accession[catalog_idx]
 
-# Known alias documented in assignment example
-sample_metadata$accession[
-  sample_metadata$name == "U266"
-] <- "CVCL_0566"
-
 # ============================================
 # 4. QUERY ANNOTATIONDB FOR CELL LINE DETAILS
 # ============================================
@@ -82,11 +77,6 @@ sample_metadata$accession[
 query_names <- unique(na.omit(
   clines_df$cell_line_name[catalog_idx]
 ))
-
-# Include U266 alias
-if ("U266" %in% sample_metadata$name) {
-  query_names <- unique(c(query_names, "U266B1"))
-}
 
 url <- "https://annotationdb.bhklab.ca/cell_line/many"
 
