@@ -41,7 +41,9 @@ Submit script(s), envs, and add your notes to the README within the `task_1` fol
 ### Task 1.1
 
 The script task_1_1.R outputs the file fda_compounds.rds containing the first mechanism entry attached information attached to each FDA approved drug in the AnnotationDB.
+
 The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location.
+
 The script logic is divided into 8 parts.
 
 1. An API request is made to the AnnotationDB requesting all compound data. The resulting data is converted to a JSON object and all non FDA approved drugs are filtered out. Due to the tabular structure of the compound data, the JSON object is actually simplified to a dataframe automatically, this however should be made more clear as the name of the dataframe is json_fda_comp instead of df_fda_comp. A clarity change that was not made due to time constraints.
@@ -63,7 +65,9 @@ The script logic is divided into 8 parts.
 ### Task 1.2
 
 The script task_1_2.R outputs the file cell_lines.rds containing the cell lines data and their metadata from AnnotationDB.
+
 The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location.
+
 The script logic is divided into 6 parts and closely follows in logic to what was described in Task 1.1
 
 1. The base cell line data is retrieved via API call from the AnnotationDB and the resulting data converted to a JSON object. Just like in Task 1.1 part 1, the resulting data is tabular in nature and so the object json_clines is actually a poorly named dataframe. Given more time this would be made more clear. 1743 cell lines are retrieved in this part.
@@ -81,7 +85,9 @@ The script logic is divided into 6 parts and closely follows in logic to what wa
 ### Task 1.3
 
 The script task_1_3.R outputs the file AnnotationDB_pset.rds containing the PharmacoSet() with the tables from tasks 1.1 and 1.2.
+
 The script must be run from the task_1/scripts/ folder in order to place the output file in the correct location and read the dataframes from tasks 1.1 and 1.2.
+
 The script logic is divided into 3 parts
 
 1. The dataframes containing the fda compounds and cell lines data (the outputs of task 1.1 and 1.2) are read and used to create a PharmacoSet() following the structure laid out in this README file. The treatmentid and sampleid fields from those fields are also checked to make sure they are non empty and non duplicated and then they are used to label the rows of the two dataframes.
