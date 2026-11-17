@@ -104,19 +104,3 @@ The script logic is divided into 3 parts
    - That an empty treatment response is present
 
 3. The resulting PharmacoSet() object is saved to the output folder as AnnotationDB_pset.rds. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
